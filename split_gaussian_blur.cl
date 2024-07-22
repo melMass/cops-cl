@@ -7,6 +7,7 @@
 #bind layer !&blurred float4
 
 #bind parm sigma float4
+#bind parm sigmaMultiplier float
 
 
 float gaussian(float x, float sigma) {
@@ -15,7 +16,7 @@ float gaussian(float x, float sigma) {
 
 @KERNEL
 {
-    @sigma = max(0.00001f, @sigma);
+    @sigma = max(0.00001f, @sigma) * @sigmaMultiplier;
     const int2 pos = (int2)(get_global_id(0), get_global_id(1));
     const int2 size = (int2)(@src.xres, @src.yres);
 
