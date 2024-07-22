@@ -3,8 +3,8 @@
 @author: melmass
 */
 
-// INFO: very wip 
-// TODO: find a better way to manage buffers
+// INFO: kept for reference but it should be broke down into multiple kernels to work properly.
+// the builtin EdgeDetect COP is built like that and is a great reference.
 
 #bind layer src float
 #bind layer !&dst float
