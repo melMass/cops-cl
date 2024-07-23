@@ -28,3 +28,8 @@ Naive glow, like the edge detection this should yield better results if done in 
 Keeping it for reference too.
 
 <img src="https://github.com/user-attachments/assets/f93274e8-20d7-4da4-8039-29c22080a7c2" width=1024/>
+
+### Pixelize
+
+
+<img src="https://github.com/user-attachments/assets/8a2ff8b6-09e4-4bbd-81e0-1951fa60e5b2" width=1024/>
