@@ -1,5 +1,5 @@
 /*
-@title: weave_v01
+@title: weave_v02
 @author: melmass
 @description: adaptation of the OSL Weave shader by Zap Andersson
 */
@@ -16,22 +16,24 @@
 #bind layer !&outId float3
 #bind layer !&outOpacity float
 
-#bind parm scale float val=0.2
+#bind parm scale float val=0.04
 #bind parm width float val=0.5
 #bind parm roundness float val=1.0
 #bind parm roundnessBump float val=1.0
 #bind parm roundShadow float val=0.5
 #bind parm weaveBump float val=0.5
-#bind parm weaveShadow float val=0.4
+#bind parm weaveShadow float val=0.25
 #bind parm frizz float val=0.0
 #bind parm frizzBump float val=0.0
 #bind parm frizzScale float val=0.1
 #bind parm bendyness float val=0.2
 #bind parm bendynessScale float val=3.0
+#bind parm braidAmplitude float val=0.0
+#bind parm braidFrequency float val=0.5
 #bind parm opacityFade float val=0.0
 #bind parm seed int val=1
-#bind parm u_color float4 val={0.2, 0.2, 0.2, 1.0}
-#bind parm v_color float4 val={0.5, 0.5, 0.5, 1.0}
+#bind parm u_color float4 val={0.0, 0.5, 0.5, 1.0}
+#bind parm v_color float4 val={0.0, 0.25, 0.5, 1.0}
 
 @KERNEL
 {
@@ -44,10 +46,10 @@
     @frizzScale = max(0.0001f,@frizzScale);
     @bendynessScale = max(0.0001f,@bendynessScale);
 
-    float2 uvw =(float2)(pos.x,pos.y) * @scale;
+    float2 uvw = (float2)(pos.x, pos.y) * @scale;
     
     // add frizz to the width
-    float frizz = mx_perlin_noise_float_2(uvw / @frizzScale, (int2)(1,1));
+    float frizz = mx_perlin_noise_float_2(uvw / @frizzScale, (int2)(1, 1));
     float w2 = @width + frizz * @frizz;
     float w = w2 * 0.5f;
     
@@ -55,10 +57,9 @@
     int vf = (int)floor(uvw.y);
     
     // compute bending
-    float ubend = mx_perlin_noise_float_2( uvw.y / @bendynessScale + 13.0f * uf, (int2)(1,1)) * @bendyness;
-    float vbend = mx_perlin_noise_float_2( uvw.x / @bendynessScale + 23.0f * uf, (int2)(1,1)) * @bendyness;
-    // float ubend = noise("perlin", uvw.y / @bendynessScale + 13.0f * uf, @seed + 4) * @bendyness;
-    // float vbend = noise("perlin", uvw.x / @bendynessScale + 23.0f * vf, @seed + 7) * @bendyness;
+    float braidOffset = @braidAmplitude * sin(uvw.y * @braidFrequency * M_PI * 2.0f);
+    float ubend = mx_perlin_noise_float_2(uvw.y / @bendynessScale + 13.0f * uf, (int2)(1, 1)) * @bendyness + braidOffset;
+    float vbend = mx_perlin_noise_float_2(uvw.x / @bendynessScale + 23.0f * vf, (int2)(1, 1)) * @bendyness;
     
     // compute thread coordinates
     float sx = uvw.x - uf + ubend;
@@ -87,7 +88,6 @@
     
     int U_on_top = (oddU ^ oddV) == 0;
     
-    // int2 per = (int2)(1,1);
     int per = 1;
     
     // both - disambiguate
@@ -98,7 +98,7 @@
     }
     
     // random ID for thread
-    int ThreadID = 1 + (int)((mx_cell_noise_float_1((float)uf + @seed + 45, per) * onV + mx_cell_noise_float_1((float)vf + @seed + 32,per) * onU) * 1024.0f) + onU;
+    int ThreadID = 1 + (int)((mx_cell_noise_float_1((float)uf + @seed + 45, per) * onV + mx_cell_noise_float_1((float)vf + @seed + 32, per) * onU) * 1024.0f) + onU;
     float3 IdColor = VEXrandom_1_3((float)ThreadID + @seed);
 
     // which color to return
@@ -129,3 +129,4 @@
     @outId.setIndex(pos, IdColor);
     @outOpacity.setIndex(pos, opacity);
 }
+
