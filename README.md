@@ -33,3 +33,11 @@ Keeping it for reference too.
 
 
 <img src="https://github.com/user-attachments/assets/8a2ff8b6-09e4-4bbd-81e0-1951fa60e5b2" width=1024/>
+
+
+### Normal to Height
+
+An (approximative) openCL implementation of this [blog post](https://stannum.io/blog/0IwyJ-)
+
+<img src="https://github.com/user-attachments/assets/00e943a0-1305-4d98-8c31-388e429f3728" width=1024/>
+<img src="https://github.com/user-attachments/assets/3c94b03c-e11a-4a69-9283-86151a2e11a1" width=1024/>
